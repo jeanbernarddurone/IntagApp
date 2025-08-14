@@ -1,55 +1,221 @@
-
-{% extends "template_base.html" %}
 {% load static %}
-{% block titre %}Home{% endblock %}
 
-{% block contenu %}
-<div style="display: flex;">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
 
-   <!-- Colonne de gauche -->
-   <div style="width: 50%; padding: 20px;">
-       <h2>Contexte et Problématique</h2>
-       <p style="text-align: justify;">
-           Les NTIC constituent un atout majeur pour la productivité du secteur agricole face aux défis et contraintes auxquels les agriculteurs sont confrontés.
-       </p> 
-       
-       <!-- Image -->
-       <img src="{% static 'images/agritic.jpg' %}" alt="Les NTIC en agriculture" width="500">
-       
-       <p style="text-align: justify;">
-           Cependant, leur adoption n’est pas systématique. Malgré les nombreux avantages qu’elles offrent, certains agriculteurs hésitent ou refusent de les utiliser.
-           Plusieurs facteurs peuvent expliquer cette réticence : manque de moyens économiques, manque de compétences techniques, capital social et culturel inadapté, capital foncier et physique incompatible avec les technologies proposées.
-       </p>
+        /* Style pour le titre avec ligne blanche */
+        .title-section {
+            background-color: white;
+            padding: 30px 0;
+            text-align: center;
+            position: relative;
+        }
 
-       <p style="text-align: justify;">
-           La mise en place des NTIC doit tenir compte des capacités des agriculteurs. 
-           Cette plateforme geoweb permet de cartographier les capitaux disponibles et d’explorer leur rôle dans l’adoption des technologies.
-       </p>
+        .title-section h2 {
+            color: #2c8a47;
+            font-size: 2em;
+            position: relative;
+            display: inline-block;
+            padding: 0 20px;
+        }
 
-       <h2>Objectifs</h2>
-       <p style="text-align: justify;">
-           L'objectif est de réaliser une plateforme permettant de cartographier les capitaux disponibles et d’explorer leur rôle dans l’adoption des technologies, 
-           afin que les décideurs puissent proposer des technologies accessibles aux agriculteurs.
-       </p>
+        .title-section h2:before,
+        .title-section h2:after {
+            content: "";
+            position: absolute;
+            height: 2px;
+            border-top: 1px solid #4CAF50;
+            top: 50%;
+            width: 50vw;
+        }
 
-       <h2>Méthodologie</h2>
-       <p style="text-align: justify;">
-           La méthodologie sera détaillée ici (ajoute tes étapes expérimentales ou analytiques).
-       </p>
+        .title-section h2:before {
+            right: 100%;
+        }
 
-       <h2>Résultats attendus</h2>
-       <p style="text-align: justify;">
-           Développer une carte interactive des capitaux permettant de cibler les exploitations et de prendre des décisions éclairées.
-       </p>
-   </div>
+        .title-section h2:after {
+            left: 100%;
+        }
 
-   <!-- Colonne de droite -->
-   <div style="width: 50%; padding: 20px;">
-       <h2>Les avantages des NTIC</h2>
-       <p style="text-align: justify;">
-           On présente ici les avantages des NTIC pour le secteur agricole.
-       </p>
-   </div>
+        .hero {
+            background-image: url("{% static 'images/agritic.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 75vh;
+            width: 100%;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+        }
+
+        .hero h2 {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+        }
+
+        .menu-features {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            padding: 50px 20px;
+            flex-wrap: wrap;
+            background-color: #f9f9f9;
+        }
+
+        .menu-item {
+            width: 250px;
+            margin: 20px;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .menu-item i {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        .menu-item h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .menu-item p {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .title-section h2 {
+                font-size: 1.5em;
+            }
+            
+            .title-section h2:before,
+            .title-section h2:after {
+                width: 30vw;
+            }
+
+            .hero {
+                height: 60vh;
+                padding: 0 10px;
+            }
+
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero h2 {
+                font-size: 1.2em;
+            }
+
+            .menu-features {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 15px;
+            }
+
+            .menu-item {
+                width: 90%;
+                margin: 15px 0;
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Titre avec ligne blanche -->
+<div class="title-section">
+    <h2>Cartographie des capitaux pour une agriculture intelligente</h2>
+</div>
+
+<!-- Section Hero -->
+<div class="hero">
+    <div class="hero-content">
+        <h1>Bienvenue sur notre plateforme</h1>
+        <h2>Cette plateforme permet 1) de cartographier les exploitations en fonction de leurs capitaux disponibles 
+           et 2) de cartographies celles qui sont susceptibles d'adopter une technologie en fonction des critéres fixés</h2>
+    </div>
+</div>
+
+<!-- Menu Features -->
+<div class="menu-features">
+    <a href="/map/" class="menu-item">
+        <i class="fas fa-map-marked-alt"></i>
+        <h3>Carte des capitaux</h3>
+        <p>Visualisez la répartition géographique des exploitatins en fonction de leurs capitaux</p>
+    </a>
+    <a href="/analyse/" class="menu-item">
+        <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+        <span class="sr-only">Loading...</span>
+        <h3>Carte des exploitations susceptibles d'adopter une NTIC</h3>
+        <p>Carte des exploitations susceptibles d'adopter des technologies agricoles en fonction des critéres spécifiques</p>
+    </a>
+        <a href="{% url 'donnees' %}" class="menu-item">
+        <i class="fas fa-clipboard-list fa-spin" style="color: #63E6BE;"></i>
+        <h3>Collecte de données</h3>
+        <p>Cette plateforme est alimentée avec vos données, et traitées de facon anonyme, merci de remplir ce questionnaire</p>
+    </a>
+    <a href="{% url 'forum' %}" class="menu-item">
+        <i class="fas fa-comments"></i>
+        <h3>Forum</h3>
+        <p>Échangez avec la communauté</p>
+    </a>
 
 </div>
-{% endblock %}
+
+</body>
+</html>

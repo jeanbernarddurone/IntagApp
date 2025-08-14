@@ -1,104 +1,298 @@
-
-
 <!DOCTYPE html>
+{% load static %}
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block titre %}  {% endblock %}</title> 
-</head>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        header {
-            display: flex; /* Utilise flexbox pour aligner les éléments */
-            justify-content: center; /* Centre le titre */
-            align-items: center; /* Centre le logo verticalement */
-            background-color: #fff; /* Fond de l'en-tête */
-            padding: 20px;Y
-            position: relative;
+        :root {
+            --primary-color: #2c8a47;
+            --secondary-color: #15307a;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
         }
-
-        header img {
-            position: absolute; /* Positionne l'image à gauche */
-            left: 20px;
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-
+        
         body {
-            background-color:rgba(21, 48, 122, 0.17); /* Couleur de fond (bleu clair) */
-            margin: 10;
-            font-family: Arial, sans-serif;
-            line-height: 1.5;
+            background-color: rgba(21, 48, 122, 0.17);
+            margin: 0;
+            line-height: 1.6;
         }
-
-        ul {
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 15px 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .main-menu {
+            display: flex;
             list-style: none;
-            background: #333; /* Couleur du menu */
-            padding: 15px;
         }
-
-        li {
-            display: inline-block;
-            padding: 20px 20px;
+        
+        .main-menu li {
+            position: relative;
+            margin: 0 10px;
         }
-
-        a {
-            color: white;
+        
+        .main-menu li a {
+            color: var(--dark-color);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
         }
-
-        a:hover {
-            color: red;
+        
+        .main-menu li a:hover {
+            color: var(--primary-color);
+            background-color: rgba(44, 138, 71, 0.1);
+        }
+        
+        .main-menu li a i {
+            margin-right: 8px;
+            font-size: 2.5rem;
+        }
+        
+        .active {
+            color: var(--primary-color) !important;
+            background-color: rgba(44, 138, 71, 0.1);
+        }
+        
+        .menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-color);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            width: 220px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .main-menu li:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            top: 120%;
+        }
+        
+        .dropdown-menu li {
+            width: 100%;
+            margin: 0;
+            padding: 5px 0;
+        }
+        
+        .dropdown-menu li a {
+            padding: 10px 20px;
+            color: var(--dark-color);
+        }
+        
+        @media (max-width: 992px) {
+            .menu-btn {
+                display: block;
+            }
+            
+            .main-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 30px;
+                transition: all 0.5s ease;
+            }
+            
+            .main-menu.active {
+                left: 0;
+            }
+            
+            .main-menu li {
+                width: 80%;
+                margin: 10px 0;
+                text-align: center;
+            }
+            
+            .main-menu li a {
+                justify-content: center;
+            }
+            
+            .dropdown-menu {
+                position: static;
+                width: 80%;
+                margin: 10px auto;
+                display: none;
+                box-shadow: none;
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .main-menu li:hover .dropdown-menu {
+                display: block;
+                top: 0;
+            }
         }
     </style>
-
-
-
+</head>
 <body>
     <header>
-        <img src="../static/images/logoinrs.png" alt="Logo INRS" width="150">
-        <h1 style="font-style: italic;">Cartographier les capitaux disponibles pour l'adoption des NTIC</h1>
+        <div class="nav-container">
+            <div class="menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <ul class="main-menu">
+                <li>
+                    <a href="/" class="active">
+                        <i class="fas fa-home"></i> Accueil
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/map/">
+                        <i class="fas fa-map-marked-alt"></i> Carte des capitaux
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/analyse/">
+                        <i class="fas fa-chart-pie"></i> Analyse NTIC
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/analyse/technologies">Technologies</a></li>
+                        <li><a href="/analyse/statistiques">Statistiques</a></li>
+                        <li><a href="/analyse/rapports">Rapports</a></li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <a href="/actualite/">
+                        <i class="far fa-newspaper"></i> Actualités
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="/contact/">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'forum' %}">
+                        <i class="fas fa-comments"></i> Forum
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'donnees' %}">
+                        <i class="fas fa-clipboard-list"></i> Collecte de données
+                    </a>
+                </li>
+            </ul>
+        </div>
     </header>
 
+    {% block contenu %}
+    <!-- Votre contenu principal ici -->
+    {% endblock %}
 
-
-
-    <!-- cela permet de creer un menu deroulant dans la page Home -->
-    <ul style='list-style:none'>   <!-- pour retirer les points-->
-        <li style='display: inline-block;padding:10px 20px'>
-           <a href='/'>Acceuil</a>
-        </li>
-     
-    
-         <li >
-            <a href='/map/'> Carte des capitaux</a>
-         </li>
-
-         <li style='display: inline-block;padding:20px 20px'>
-            <a href='/analyse/'> Poids des capitaux dans l'adoption des NTIC</a>
-         </li>
-
-
- <!-- cela permet d'acceder a la page Actualite -->
-        <li style='display: inline-block;padding:30px 20px'>
-            <a href='/actualite/'>Actualités</a>
-         </li>
-
- <!-- cela permet d'acceder a la page Contact-->
-         <li style='display: inline-block;padding:10px 20px'>
-            <a href='/contact/'>Contact</a>
-         </li>
-
-
-         <li style='display: inline-block;padding:10px 20px'>
-            <a href="{% url 'forum' %}">Forum</a>
-        </li>
-
-        <li><a href="{% url 'donnees' %}">Formulaire de collecte de données</a></li>
-
-    </ul>
-    {% block contenu%} {% endblock %}
-    <body>
-    <html>
-    
+    <script>
+        // Menu mobile
+        const menuBtn = document.querySelector('.menu-btn');
+        const mainMenu = document.querySelector('.main-menu');
+        
+        menuBtn.addEventListener('click', () => {
+            mainMenu.classList.toggle('active');
+            
+            // Changement d'icône
+            const icon = menuBtn.querySelector('i');
+            if (mainMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Sous-menu mobile
+        const dropdownParents = document.querySelectorAll('.main-menu > li > a i.fa-chevron-down');
+        
+        dropdownParents.forEach(parent => {
+            parent.addEventListener('click', (e) => {
+                if (window.innerWidth <= 992) {
+                    e.preventDefault();
+                    const dropdown = parent.parentElement.nextElementSibling;
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                }
+            });
+        });
+        
+        // Active le lien courant
+        const currentPage = window.location.pathname;
+        const menuLinks = document.querySelectorAll('.main-menu li a');
+        
+        menuLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+                // Retire active de tous les autres liens
+                menuLinks.forEach(otherLink => {
+                    if (otherLink !== link) {
+                        otherLink.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
