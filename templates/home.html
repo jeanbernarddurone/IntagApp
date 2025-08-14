@@ -1,58 +1,56 @@
-
+{% load static %}
 {% extends "template_base.html" %}
 
-<title>{% block titre %} Home {% endblock %}</title> 
+{% block titre %}Home{% endblock %}
 
-
-{% block contenu%}
-
+{% block contenu %}
 <div style="display: flex;">
+
    <!-- Colonne de gauche -->
    <div style="width: 50%; padding: 20px;">
-       <h2>Contexte et Problematique</h2>
+       <h2>Contexte et Problématique</h2>
        <p style="text-align: justify;">
-        Les NTIC constituent un atout majeur pour la productivité du secteur agricole face aux défis et contraintes auxquels les agriculteurs sont confrontés. </p> 
-        <img src="../static/images/agritic.jpg" alt="Les NTIC en agricultures" width="500">
-        <img src="{% static 'images/agritic.jpg' %}" alt="Image">
+           Les NTIC constituent un atout majeur pour la productivité du secteur agricole face aux défis et contraintes auxquels les agriculteurs sont confrontés.
+       </p> 
+       
+       <!-- Images -->
+       <img src="{% static 'images/agritic.jpg' %}" alt="Les NTIC en agriculture" width="500">
+       
+       <p style="text-align: justify;">
+           Cependant, leur adoption n’est pas systématique. Autrement dit, malgré les nombreux avantages qu’elles offrent, certains agriculteurs hésitent ou refusent de les utiliser.
+           Plusieurs facteurs peuvent expliquer cette réticence à adopter les NTIC (Nouvelles Technologies de l’Information et de la Communication) malgré leurs avantages évidents :
+           tels que : manque de moyens économiques, manque de compétences techniques, capital social et culturel inadapté, capital foncier et physique incompatible avec les technologies proposées.
+       </p>
 
-        
-        <br>
-        <br>
-        <br>
-        <p style="text-align: justify;"> Cependant, leur adoption n’est pas systématique. Autrement dit, malgré les nombreux avantages qu’elles offrent, certains agriculteurs hésitent ou refusent de les utiliser.
-        Plusieurs facteurs peuvent expliquer cette réticence à adopter les NTIC (Nouvelles Technologies de l’Information et de la Communication) malgré leurs avantages évidents :
-        Telsque: Manque de Moyens economiques, manque de competence techniques, capital social et culturelle inadaptés, capital foncier et physique incompatibles aux technologies proposées
+       <p style="text-align: justify;">
+           Donc la mise en place des NTIC doit tenir compte des capacités des agriculteurs, autrement dit des capitaux dont ils disposent. 
+           Ainsi cette plateforme geoweb permet, dans un premier temps, de cartographier les capitaux disponibles, et dans un deuxième temps, d’explorer le poids des capitaux dans l’adoption des technologies.
+       </p>
 
-      <p style="text-align: justify;"> Donc la mise point des NTIC doit tenir compte des capacités des agriculteurs. Autrement dit des capitaux dont ils se disponible. Ainsi cette plateforme geoweb permet dans un premier temps de cartographier les capitaux disponibles. Dans un deuxième temps explorer le poids des capitaux dans l’adoption des technologies </p>
-      <br>
+       <h2>Objectifs</h2>
+       <p style="text-align: justify;">
+           L'objectif du travail est de réaliser une plateforme permettant de cartographier les capitaux disponibles et d’explorer leur rôle dans l’adoption des technologies, 
+           afin que les décideurs technologiques et politiques puissent proposer des technologies accessibles et utilisables par les agriculteurs.
+       </p>
 
-      <h2>Objectifs</h2>
+       <h2>Méthodologie</h2>
+       <p style="text-align: justify;">
+           La méthodologie sera détaillée ici (ajoute tes étapes expérimentales ou analytiques).
+       </p>
 
-      <p style="text-align: justify;"> L'objectif du travail est de realiser une plateforme permettant de cartographier les capitaux disponibles et  explorer le poids des capitaux dans l’adoption des technologies 
-      afin que les decideurs technologiques et politiques puissent proposées des technologies qui sont accecibles et utilisables par les agricultures.</p>
-
-      <h2>Methodologie</h2>
-
-      <h2>Resultats attendu</h2>
-      <p> Developper une carte interrative des capitaux  permettant de ciblés des exploitations et aussi prendre des decisions</p>
-
-
-     </p>
+       <h2>Résultats attendus</h2>
+       <p style="text-align: justify;">
+           Développer une carte interactive des capitaux permettant de cibler les exploitations et de prendre des décisions éclairées.
+       </p>
    </div>
 
    <!-- Colonne de droite -->
    <div style="width: 50%; padding: 20px;">
        <h2>Les avantages des NTIC</h2>
-       <pstyle="text-align: justify;">On présente les avantages</p>
+       <p style="text-align: justify;">
+           On présente ici les avantages des NTIC pour le secteur agricole.
+       </p>
    </div>
+
 </div>
-
-
-
-
-
-
-
-
-
-    {% endblock %}
+{% endblock %}
