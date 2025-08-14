@@ -1,0 +1,179 @@
+{% extends "template_base.html" %}
+
+{% block titre %} Carte des exploitations agricoles au Canada {% endblock %}
+
+{% block contenu %}
+    <title>Carte des exploitations agricoles au Canada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Conteneur de la carte */
+        .map-container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* Conteneur des filtres */
+        .filter-container {
+            position: fixed;
+            top: 20%;
+            left: 20px;
+            width: 250px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+
+        .filter-container label,
+        .filter-container select,
+        .filter-container input {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .filter-container input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .slider-value {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        /* Ajustements pour les grandes résolutions */
+        @media (min-width: 768px) {
+            .map-container {
+                width: 70%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Carte des exploitations agricoles au Canada</h1>
+
+    <!-- Formulaire de filtrage -->
+    <div class="filter-container">
+        <form method="GET" action="">
+            <div class="form-group">
+                <label for="niveau_etudes">Filtrer par niveau d'études :</label>
+                <select name="niveau_etudes" id="niveau_etudes">
+                    <option value="">--Choisir--</option>
+                    <option value="Aucune" {% if niveau_etudes_filter == 'Aucune' %}selected{% endif %}>Aucune</option>
+                    <option value="Primaire" {% if niveau_etudes_filter == 'Primaire' %}selected{% endif %}>Primaire</option>
+                    <option value="Bac" {% if niveau_etudes_filter == 'Bac' %}selected{% endif %}>Bac</option>
+                    <option value="Licence" {% if niveau_etudes_filter == 'Licence' %}selected{% endif %}>Licence</option>
+                    <option value="Maitrise" {% if niveau_etudes_filter == 'Maitrise' %}selected{% endif %}>Maitrise</option>
+                    <option value="Doctorat" {% if niveau_etudes_filter == 'Doctorat' %}selected{% endif %}>Doctorat</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="type_exploitation">Filtrer par type d'exploitation :</label>
+                <select name="type_exploitation" id="type_exploitation">
+                    <option value="">--Choisir--</option>
+                    <option value="Culture" {% if type_exploitation_filter == 'Culture' %}selected{% endif %}>Culture</option>
+                    <option value="Élevage" {% if type_exploitation_filter == 'Élevage' %}selected{% endif %}>Élevage</option>
+                    <option value="Mixte" {% if type_exploitation_filter == 'Mixte' %}selected{% endif %}>Mixte</option>
+                    <option value="Autre" {% if type_exploitation_filter == 'Autre' %}selected{% endif %}>Autre</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="capital_min">Capital financier min ($):</label>
+                <input type="range" name="capital_min" id="capital_min" min="0" value="{{ capital_min|default:'' }}">
+                <div class="slider-value">Valeur: <span id="min_value">{{ capital_min|default:'' }}</span></div>
+            </div>
+
+            <div class="form-group">
+                <label for="capital_max">Capital financier max ($):</label>
+                <input type="range" name="capital_max" id="capital_max" max="9999999999999"  value="{{ capital_max|default:'' }}">
+                <div class="slider-value">Valeur: <span id="max_value">{{ capital_max|default:'' }}</span></div>
+            </div>
+
+            <div class="form-group">
+                <label for="qualite_sol">Filtrer par qualité du sol :</label>
+                <select name="qualite_sol" id="qualite_sol">
+                    <option value="">--Choisir--</option>
+                    <option value="Pauvre" {% if qualite_sol_filter == 'Pauvre' %}selected{% endif %}>Pauvre</option>
+                    <option value="Moyen" {% if qualite_sol_filter == 'Moyen' %}selected{% endif %}>Moyen</option>
+                    <option value="Bon" {% if qualite_sol_filter == 'Bon' %}selected{% endif %}>Bon</option>
+                    <option value="Très bon" {% if qualite_sol_filter == 'Très bon' %}selected{% endif %}>Très bon</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="employes_permanents">Employés permanents min :</label>
+                <input type="number" name="employes_permanents" id="employes_permanents" min="0" value="{{ employes_permanents_filter|default:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="employes_temporaires">Employés temporaires min :</label>
+                <input type="number" name="employes_temporaires" id="employes_temporaires" min="0" value="{{ employes_temporaires_filter|default:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="employe_avec_competence_NTIC">Filtrer par employé avec compétence NTIC :</label>
+                <select name="employe_avec_competence_NTIC" id="employe_avec_competence_NTIC">
+                    <option value="">--Choisir--</option>
+                    <option value="1" {% if employe_avec_competence_NTIC_filter == '1' %}selected{% endif %}>Oui</option>
+                    <option value="2" {% if employe_avec_competence_NTIC_filter == '2' %}selected{% endif %}>Non</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Membre_association">Membre d'association :</label>
+                <select name="Membre_association" id="Membre_association">
+                    <option value="">--Choisir--</option>
+                    <option value="1" {% if Membre_association_filter == '1' %}selected{% endif %}>Oui</option>
+                    <option value="2" {% if Membre_association_filter == '2' %}selected{% endif %}>Non</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Filtrer</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Afficher la carte -->
+    <div class="map-container">
+        {{ map_html|safe }}
+    </div>
+
+    <script>
+        const minSlider = document.getElementById('capital_min');
+        const maxSlider = document.getElementById('capital_max');
+        const minValue = document.getElementById('min_value');
+        const maxValue = document.getElementById('max_value');
+
+        minSlider.oninput = function() {
+            minValue.textContent = minSlider.value;
+        }
+
+        maxSlider.oninput = function() {
+            maxValue.textContent = maxSlider.value;
+        }
+    </script>
+</body>
+</html>
+{% endblock %}

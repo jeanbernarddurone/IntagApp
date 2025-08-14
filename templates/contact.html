@@ -1,0 +1,52 @@
+{% extends "template_base.html" %}
+
+{% block titre %} Contact {% endblock %}
+
+{% block contenu %}
+    <h2>Prise de contact</h2>
+    <p>
+        Vous avez des questions ou besoin d’assistance ? Nous sommes à votre disposition. <br> 
+        N'hésitez pas à nous contacter par e-mail à : <br>
+
+        <a href="Célicourt.paul@inrs.ca" style="color: blue;font-style: italic;">Célicourt Paul : celicourt.paul@inrs.ca</a> <br>
+        <a href="jean-bernard.durone@inrs.ca" style="color: blue;font-style: italic;">Jean Bernard Durone : jean-bernard.durone@inrs.ca</a> <br>
+    
+
+
+
+    </p>
+
+    <br>
+    <img src="../static/images/logoinrs.png" alt="Logo INRS" width="300">
+
+
+
+
+
+    <br>
+    <br>
+    <p>
+       Vous pouvez également utilisé ce formulaire de contact ci-dessous
+    </p>
+    <form method="post">
+        {% csrf_token %}  <!-- Protection contre les attaques CSRF -->
+        
+        <label for="nom">Nom :</label><br>
+        <input type="text" id="nom" name="nom" required><br><br>
+
+        <label for="email">E-mail :</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="message">Message :</label><br>
+        <textarea id="message" name="message" rows="10" required></textarea><br><br>
+
+        <button type="submit">Envoyer</button>
+    </form>
+
+
+    <br>
+    <a href="https://www.linkedin.com/in/jean-bernard-durone/" target="_blank" style="color: blue; text-decoration: underline;display: block; text-align: center">
+        Visitez ce lien pour apprendre plus sur nous
+    </a>
+
+{% endblock %}

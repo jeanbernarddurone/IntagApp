@@ -1,0 +1,43 @@
+{% extends "template_base.html" %}
+
+{% block titre %} Données Collectées {% endblock %}
+
+{% block contenu %}
+    <h2>Liste des Exploitations Agricoles</h2>
+
+    <table border="1" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Localisation</th>
+                <th>Type d'Exploitation</th>
+                <th>Code Postal</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Capital Humain</th>
+                <th>Capital Financier</th>
+                <th>Capital Naturel</th>
+                <th>Capital Social</th>
+                <th>Capital Technologique</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for donnee in donnees %}
+                <tr>
+                    <td>{{ donnee.nom }}</td>
+                    <td>{{ donnee.localisation }}</td>
+                    <td>{{ donnee.type_exploitation }}</td>
+                    <td>{{ donnee.code_postal }}</td>
+                    <td>{{ donnee.latitude }}</td>
+                    <td>{{ donnee.longitude }}</td>
+                    <td>{{ donnee.employes_permanents }} employés permanents, {{ donnee.employes_temporaires }} employés temporaires</td>
+                    <td>{{ donnee.fonds_disponibles }} fonds disponibles</td>
+                    <td>{{ donnee.surface_irriguee }} m² irrigués</td>
+                    <td>{{ donnee.nb_associations }} associations</td>
+                    <td>{{ donnee.utilise_technologie }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "template_base.html" %}
+
+{% block titre %} Analyse des Données {% endblock %}
+
+{% block contenu %}
+
+        <!-- Affichage du nombre d'exploitations -->
+    <h2 class="mt-4">🔢 Nombre d'Exploitations: {{ nombre_exploitations }}  </h2>
+    
+
+
+    <h2>Statistiques descriptives</h2>
+    {{ stats|safe }}
+
+   <!--  <h2>Graphique</h2>
+    <img src="{{ image_uri }}" alt="Graphique" /> -->
+{% endblock %}

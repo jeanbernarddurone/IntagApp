@@ -1,0 +1,104 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titre %}  {% endblock %}</title> 
+</head>
+
+    <style>
+        header {
+            display: flex; /* Utilise flexbox pour aligner les éléments */
+            justify-content: center; /* Centre le titre */
+            align-items: center; /* Centre le logo verticalement */
+            background-color: #fff; /* Fond de l'en-tête */
+            padding: 20px;Y
+            position: relative;
+        }
+
+        header img {
+            position: absolute; /* Positionne l'image à gauche */
+            left: 20px;
+        }
+
+
+        body {
+            background-color:rgba(21, 48, 122, 0.17); /* Couleur de fond (bleu clair) */
+            margin: 10;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        ul {
+            list-style: none;
+            background: #333; /* Couleur du menu */
+            padding: 15px;
+        }
+
+        li {
+            display: inline-block;
+            padding: 20px 20px;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: red;
+        }
+    </style>
+
+
+
+<body>
+    <header>
+        <img src="../static/images/logoinrs.png" alt="Logo INRS" width="150">
+        <h1 style="font-style: italic;">Cartographier les capitaux disponibles pour l'adoption des NTIC</h1>
+    </header>
+
+
+
+
+    <!-- cela permet de creer un menu deroulant dans la page Home -->
+    <ul style='list-style:none'>   <!-- pour retirer les points-->
+        <li style='display: inline-block;padding:10px 20px'>
+           <a href='/'>Acceuil</a>
+        </li>
+     
+    
+         <li >
+            <a href='/map/'> Carte des capitaux</a>
+         </li>
+
+         <li style='display: inline-block;padding:20px 20px'>
+            <a href='/analyse/'> Poids des capitaux dans l'adoption des NTIC</a>
+         </li>
+
+
+ <!-- cela permet d'acceder a la page Actualite -->
+        <li style='display: inline-block;padding:30px 20px'>
+            <a href='/actualite/'>Actualités</a>
+         </li>
+
+ <!-- cela permet d'acceder a la page Contact-->
+         <li style='display: inline-block;padding:10px 20px'>
+            <a href='/contact/'>Contact</a>
+         </li>
+
+
+         <li style='display: inline-block;padding:10px 20px'>
+            <a href="{% url 'forum' %}">Forum</a>
+        </li>
+
+        <li><a href="{% url 'donnees' %}">Formulaire de collecte de données</a></li>
+
+    </ul>
+    {% block contenu%} {% endblock %}
+    <body>
+    <html>
+    

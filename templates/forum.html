@@ -1,0 +1,599 @@
+{% extends "template_base.html" %}
+
+{% block titre %} Forum {% endblock %}
+
+{% block contenu %}
+    <style>
+
+        .container {
+            width: 85%;
+            margin: 30px auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            text-align: center;
+            color: white !important;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+
+        h4 {
+            color: white !important;
+        }
+
+
+
+        .post, .new-post-form, .reponse {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .post:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 25px rgba(154, 200, 226, 0.5);
+        }
+
+        .post h3 {
+            margin: 0;
+            color: white !important;
+            font-size: 1.7em;
+        }
+
+        .post p {
+            margin: 15px 0;
+            line-height: 1.6;
+            color: white !important;
+        }
+
+        .post .info {
+            font-size: 0.9em;
+            color: white !important;
+        }
+
+        .like-dislike-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .like-dislike-buttons button {
+            font-size: 1em;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        button.dislike-button {
+            background: #e74c3c;
+        }
+
+        button.dislike-button:hover {
+            background: #c0392b;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        .reponse p {
+            margin: 10px 0;
+            color: #ccc;
+        }
+
+        .reponse em {
+            font-style: italic;
+            color: #aaa;
+        }
+
+        form input, form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: #333;
+            color: white;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        form input:focus, form textarea:focus {
+            background: #444;
+        }
+
+        .new-post-form button[type="submit"], .reply-form button[type="submit"] {
+            background-color: #f1c40f;
+            color: black;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .new-post-form button[type="submit"]:hover, .reply-form button[type="submit"]:hover {
+            background-color: #d4ac0d;
+        }
+
+        .new-post-button {
+            background-color: #f1c40f;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-block;
+            color: black;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .new-post-button:hover {
+            background-color: #d4ac0d;
+        }
+
+        .reply-form {
+            margin-top: 15px;
+        }
+    </style>
+
+    <div class="container">
+        <h2>Forum de Discussion</h2>
+
+        <!-- Bouton Nouveau Poste -->
+        <button class="new-post-button" onclick="toggleNewPostForm()">Nouvelle Publication</button>
+
+        <!-- Formulaire pour ajouter un nouveau message -->
+        <div id="newPostForm" class="new-post-form" style="display:none;">
+            <h3>Ajouter un message</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+
+        <h3>Messages</h3>
+        {% for post in posts %}
+            <div class="post">
+                <h3>{{ post.titre }}</h3>
+                <p>{{ post.contenu }}</p>
+                <p class="info"><strong>Auteur:</strong> {{ post.auteur }} | <strong>Date:</strong> {{ post.date_publication }}</p>
+
+                <!-- Boutons Like / Dislike -->
+                <div class="like-dislike-buttons">
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <button type="submit" name="like" class="like-button">👍 {{ post.likes }}</button>
+                    </form>
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <button type="submit" name="dislike" class="dislike-button">👎 {{ post.dislikes }}</button>
+                    </form>
+                    <!-- Bouton pour répondre -->
+                    <button class="reply-button" onclick="openReplyForm('{{ post.id }}')">Répondre</button>
+                </div>
+
+                <!-- Formulaire de réponse (au-dessus des réponses) -->
+                <div id="replyForm_{{ post.id }}" class="reply-form" style="display:none;">
+                    <h4>Répondre à ce message</h4>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <!-- Champ caché pour l'ID du post -->
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+
+                        <!-- Champ pour l'auteur -->
+                        <input type="text" name="auteur" placeholder="Entrez votre nom" required>
+
+                        <!-- Champ pour le contenu de la réponse -->
+                        <textarea name="contenu" placeholder="Écrivez votre réponse..." required></textarea>
+
+                        <button type="submit">Envoyer la réponse</button>
+                    </form>
+                </div>
+
+                <!-- Affichage des réponses -->
+                <div class="reponses">
+                    <h4>Réponses :</h4>
+                    {% for reponse in post.reponses.all %}
+                        <div class="reponse">
+                            <p><strong>{{ reponse.auteur }}</strong>: {{ reponse.contenu }}</p>
+                            <p><em>Posté le {{ reponse.date_publication }}</em></p>
+                        </div>
+                    {% empty %}
+                        <p>Aucune réponse pour ce message.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <p>Il n'y a pas encore de messages.</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Fonction pour afficher / masquer le formulaire de nouveau poste
+        function toggleNewPostForm() {
+            const form = document.getElementById('newPostForm');
+            if (form.style.display === "none") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+
+        // Fonction pour afficher le formulaire de réponse
+        function openReplyForm(postId) {
+            const form = document.getElementById('replyForm_' + postId);
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+    </script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "template_base.html" %}
+
+{% block titre %} Forum {% endblock %}
+
+{% block contenu %}
+    <style>
+        body {
+            background: linear-gradient(45deg, #2c3e50, #4ca1af);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 85%;
+            margin: 30px auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            color: #f1c40f;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+
+        .post, .new-post-form, .reponse {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .post:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .post h3 {
+            margin: 0;
+            color: #f1c40f;
+            font-size: 1.7em;
+        }
+
+        .post p {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .post .info {
+            font-size: 0.9em;
+            color: #bbb;
+        }
+
+        .like-dislike-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .like-dislike-buttons button {
+            font-size: 1em;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        button.dislike-button {
+            background: #e74c3c;
+        }
+
+        button.dislike-button:hover {
+            background: #c0392b;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        .reponse p {
+            margin: 10px 0;
+            color: #ccc;
+        }
+
+        .reponse em {
+            font-style: italic;
+            color: #aaa;
+        }
+
+        form input, form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: #333;
+            color: white;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        form input:focus, form textarea:focus {
+            background: #444;
+        }
+
+        .new-post-form button[type="submit"] {
+            background-color: #f1c40f;
+            color: black;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .new-post-form button[type="submit"]:hover {
+            background-color: #d4ac0d;
+        }
+
+        .reponse-form {
+            margin-top: 15px;
+        }
+
+        /* Styles de la fenêtre modale */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow: auto;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: #333;
+            color: #fff;
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: 12px;
+            width: 40%;
+            transition: transform 0.3s ease;
+        }
+
+        .modal input, .modal textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: #444;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .modal button {
+            background-color: #f1c40f;
+            color: black;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal button:hover {
+            background-color: #d4ac0d;
+        }
+
+        .close {
+            color: #bbb;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 0;
+            right: 20px;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Style du bouton Nouveau Poste */
+        .new-post-button {
+            background-color: #f1c40f;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-block;
+            color: black;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .new-post-button:hover {
+            background-color: #d4ac0d;
+        }
+    </style>
+
+    <div class="container">
+        <h1>Forum de Discussion</h1>
+
+        <!-- Bouton Nouveau Poste -->
+        <button class="new-post-button" onclick="toggleNewPostForm()">Nouveau Poste</button>
+
+        <!-- Formulaire pour ajouter un nouveau message -->
+        <div id="newPostForm" class="new-post-form" style="display:none;">
+            <h2>Ajouter un message</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+
+        <h2>Messages</h2>
+        {% for post in posts %}
+            <div class="post">
+                <h3>{{ post.titre }}</h3>
+                <p>{{ post.contenu }}</p>
+                <p class="info"><strong>Auteur:</strong> {{ post.auteur }} | <strong>Date:</strong> {{ post.date_publication }}</p>
+
+                <!-- Boutons Like / Dislike -->
+                <div class="like-dislike-buttons">
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <button type="submit" name="like" class="like-button">👍 {{ post.likes }}</button>
+                    </form>
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <button type="submit" name="dislike" class="dislike-button">👎 {{ post.dislikes }}</button>
+                    </form>
+                    <!-- Bouton pour répondre -->
+                    <button class="reply-button" onclick="openModal('{{ post.id }}')">Répondre</button>
+                </div>
+
+                <!-- Affichage des réponses -->
+                <div class="reponses">
+                    <h4>Réponses :</h4>
+                    {% for reponse in post.reponses.all %}
+                        <div class="reponse">
+                            <p><strong>{{ reponse.auteur }}</strong>: {{ reponse.contenu }}</p>
+                            <p><em>Posté le {{ reponse.date_publication }}</em></p>
+                        </div>
+                    {% empty %}
+                        <p>Aucune réponse pour ce message.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <p>Il n'y a pas encore de messages.</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Fonction pour afficher / masquer le formulaire de nouveau poste
+        function toggleNewPostForm() {
+            const form = document.getElementById('newPostForm');
+            if (form.style.display === "none") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+
+        // Fonction pour ouvrir la fenêtre modale
+        function openModal(postId) {
+            document.getElementById('post_id_modal').value = postId;
+            document.getElementById('replyModal').style.display = "block";
+        }
+
+        // Fonction pour fermer la fenêtre modale
+        function closeModal() {
+            document.getElementById('replyModal').style.display = "none";
+        }
+
+        // Fermer la modale si l'utilisateur clique en dehors de la fenêtre
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('replyModal')) {
+                closeModal();
+            }
+        }
+    </script>
+
+{% endblock %} {% endcomment %}

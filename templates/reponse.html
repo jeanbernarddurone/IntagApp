@@ -1,0 +1,18 @@
+{% extends "template_base.html" %}
+
+{% block titre %} Répondre au Post {% endblock %}
+
+{% block contenu %}
+    <div class="container">
+        <h1>Répondre à : {{ post.titre }}</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ reponse_form.as_p }}
+            <button type="submit">Envoyer</button>
+        </form>
+
+        <br>
+        <a href="{% url 'forum' %}">Retour au Forum</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "template_base.html" %}
+
+{% block titre %} Collecte de Données {% endblock %}
+
+{% block contenu %}
+    <style>
+        /* Style général */
+        body {
+            background-color: #77ace4; /* Bleu doux */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Conteneur principal */
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Boîte du formulaire */
+        .form-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px; /* Largeur ajustable */
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        p {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* Style des champs du formulaire */
+        label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+            margin-top: 10px;
+            color: #444;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            font-size: 1em;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #4CAF50; /* Bordure verte quand focus */
+            outline: none;
+        }
+
+        /* Style du bouton */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            width: 100%;
+            transition: background 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Ajustements pour mobile */
+        @media (max-width: 600px) {
+            .form-box {
+                padding: 20px;
+                width: 90%;
+            }
+        }
+    </style>
+
+    <div class="form-container">
+        <div class="form-box">
+            <h2>Formulaire de Collecte</h2>
+            <p>Veuillez remplir ce formulaire pour soumettre vos informations.</p>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }} <!-- Affichage propre du formulaire -->
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
